@@ -14,12 +14,12 @@
             СВЕДЕНИЯ ОБ АВТОРАХ
           </strong>
         </p>
-        <div class="form-group">
+        <div class="mb-3">
           <label>АВТОРЫ</label>
           <input type="button" class="btn btn-primary" value="+" @click="addAuthor">
         </div>
         <div>
-          <div class="form-group" v-for="(author, key, index) in authors" :key="key">
+          <div class="mb-3" v-for="(author, key, index) in authors" :key="key">
             <label @dblclick="deleteAuthor(key)">
               АВТОР {{ index + 1 }}
             </label>
