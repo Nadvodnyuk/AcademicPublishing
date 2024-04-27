@@ -2,23 +2,16 @@
   <!-- Вывод всех работ списком, сделать фильтрацию -->
   <div>
     <section>
-      <h1>Статьи</h1>
+      <h1>Авторы</h1>
       <hr /><br />
 
-      <div v-if="works">
-        <div v-for="work in works" :key="work.id" class="works">
+      <div v-if="authors">
+        <div v-for="author in authors" :key="author.id" class="authors">
           <div class="card" style="width: 18rem;">
             <div class="card-body">
-              <p><strong> {{ work.title }} </strong></p>
-              <ul>
-                <li v-for="(author, index) in work.author" :key="index">
-                  <router-link :to="{ name: 'AuthorC', params: { id: author.author_id.id } }">
-                    {{ author.author_id.short_name }}
-                  </router-link>
-                </li>
-              </ul>
-              <router-link :to="{ name: 'WorkC', params: { id: work.id } }">
-                Посмотреть полностью
+              <p><strong> {{ author.full_name }} </strong></p>
+              <router-link :to="{ name: 'AuthorC', params: { id: author.id } }">
+                Посмотреть автора
               </router-link>
             </div>
           </div>
@@ -38,20 +31,20 @@ import { defineComponent } from 'vue';
 import { mapGetters } from 'vuex'; //, mapActions 
 
 export default defineComponent({
-  name: 'AllWorks',
+  name: 'AllAuthors',
   data() {
     return {
     };
   },
 
   created: function () {
-    return this.$store.dispatch('getWorks');
+    return this.$store.dispatch('getAuthors');
   },
 
   computed: {
     ...mapGetters({
-      works: 'stateWorks',
-      authorsWorksByWork: 'stateAuthorsWorksByWork'
+      authors: 'stateAuthors',
+      authorsAuthorsByAuthor: 'stateAuthorsAuthorsByAuthor'
     }),
   },
 

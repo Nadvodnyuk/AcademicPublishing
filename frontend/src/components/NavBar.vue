@@ -4,20 +4,12 @@
       <div class="container" style=" margin-left: 42px;">
         <router-link class="navbar-brand" to="/">Статьи
         </router-link>
-        <button class="navbar-toggler" 
-        type="button" 
-        data-bs-toggle="collapse" 
-        data-bs-target="#navbarCollapse"
-        aria-controls="navbarCollapse" 
-        aria-expanded="false" 
-        aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse"
+          aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon">
           </span>
         </button>
-        <div 
-          class="collapse navbar-collapse" 
-          id="navbarCollapse"  
-          style="flex-grow: 0;">
+        <div class="collapse navbar-collapse" id="navbarCollapse" style="flex-grow: 0;">
           <ul v-if="isLoggedIn" class="navbar-nav me-auto mb-2 mb-md-0">
             <li class="nav-item">
               <router-link class="nav-link" to="/dashboard">Создать статью
@@ -25,6 +17,10 @@
             </li>
             <li class="nav-item">
               <router-link class="nav-link" to="/all">Все статьи
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/allAuthors">Все авторы
               </router-link>
             </li>
             <li class="nav-item">
@@ -39,6 +35,10 @@
           <ul v-else class="navbar-nav me-auto mb-2 mb-md-0">
             <li class="nav-item">
               <router-link class="nav-link" to="/">Главная
+              </router-link>
+            </li>
+            <li class="nav-item">
+              <router-link class="nav-link" to="/dashboard">Создать статью
               </router-link>
             </li>
             <li class="nav-item">

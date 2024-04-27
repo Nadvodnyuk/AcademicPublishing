@@ -1,17 +1,12 @@
 <template>
-  <!-- 
-  Что-то об авторах
-  -->
-
-  <!-- 
-  нужно придумать, как их выводить
-  можно: сначала их найти в списке авторыработы, потом их поочередно добавлять в здешний массив
-  можно:
-    получить список авторыработы через workID, потом дость все ID авторов и вызвать 
-    функцию, которая на бэке будет получать список ID, и возвращать список авторов
-  -->
-
   <div v-if="work">
+    <ul>
+      <li v-for="(author, index) in work.author" :key="index">
+        <router-link :to="{ name: 'AuthorC', params: { id: author.author_id.id } }">
+          {{ author.author_id.short_name }}
+        </router-link>
+      </li>
+    </ul>
     <p><strong> {{ work.title }} </strong></p>
     <p>{{ work.year }}</p>
 
@@ -55,6 +50,11 @@
         Редактировать статус
       </router-link>
     </p>
+    <p>
+      <button @click="removeWork()" class="btn btn-secondary">
+        Удалить статью
+      </button>
+    </p>
   </div>
 </template>
 
@@ -87,7 +87,6 @@ export default defineComponent({
     async removeWork() {
       try {
         await this.deleteWork(this.id);
-        await this.deleteAuthorsWorksByWorkId(this.id);
         this.$router.push('/all');
       } catch (error) {
         console.error(error);

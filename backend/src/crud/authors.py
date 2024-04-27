@@ -23,7 +23,8 @@ async def create_author(author) -> AuthorOutSchema:
     existing_author = await Authors.filter(full_name=author.full_name, code=author.code).first()
     if existing_author:
         # Если автор уже существует, обновляем его данные
-        ex_author = await Authors.filter(full_name=author.full_name, code=author.code).update(**author.dict(exclude_unset=True))
+        await Authors.filter(full_name=author.full_name, code=author.code).update(**author.dict(exclude_unset=True))
+        ex_author = await Authors.filter(full_name=author.full_name, code=author.code).first()
         return await AuthorOutSchema.from_tortoise_orm(ex_author)
     try:
         author_obj = await Authors.create(**author.dict(exclude_unset=True))

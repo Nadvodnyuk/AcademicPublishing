@@ -8,7 +8,8 @@ import WorkView from '@/views/WorkView.vue';
 import AuthorView from '@/views/AuthorView.vue';
 import EditWorkView from '@/views/EditWorkView.vue';
 import AllWorksView from '@/views/AllWorksView.vue';
-import store from '@/store'; // NEW
+import AllAuthorsView from '@/views/AllAuthorsView.vue';
+import store from '@/store';
 
 
 const routes = [
@@ -37,6 +38,12 @@ const routes = [
     path: '/all',
     name: 'AllWorks',
     component: AllWorksView,
+    meta: { requiresAuth: true },
+  },
+  {
+    path: '/allAuthors',
+    name: 'AllAuthors',
+    component: AllAuthorsView,
     meta: { requiresAuth: true },
   },
   {
