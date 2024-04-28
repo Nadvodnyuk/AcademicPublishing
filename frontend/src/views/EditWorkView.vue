@@ -1,7 +1,4 @@
 <template>
-  <!-- 
-    Здесь админ редактирует статью
-   -->
   <section>
     <h1>Отредактиковать статью</h1>
     <hr /><br />
@@ -42,12 +39,14 @@ export default defineComponent({
 
     async submit() {
       try {
-        let editWork = {
+        let work = {
           id: this.id,
           form: this.form,
         };
-        await this.updateWork(editWork);
-        this.$router.push({ name: 'WorkC', params: { id: this.editWork.id } });
+
+        console.log(work);
+        await this.updateWork(work);
+        this.$router.push({ name: 'WorkC', params: { id: this.work.id } });
       } catch (error) {
         console.log(error);
       }
@@ -56,7 +55,7 @@ export default defineComponent({
     async GetWork() {
       try {
         await this.viewWork(this.id);
-        this.form.status = this.note.status;
+        this.form.status = this.work.status;
       } catch (error) {
         console.error(error);
         this.$router.push('/all');

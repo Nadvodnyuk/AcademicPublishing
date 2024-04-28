@@ -47,10 +47,9 @@ const actions = {
     }
   },
   // eslint-disable-next-line no-empty-pattern
-  async updateWork({}, { work }) {
+  async updateWork({}, work ) {
     try {
-      await axios.patch(`work/${work.id}`, work.form);
-      // Дальнейшая обработка обновленных данных, если необходимо
+      await axios.patch(`work/${state.work.id}`, work.form);
     } catch (error) {
       console.error(`Failed to update work with ID ${work.id}:`, error);
       throw error;
@@ -60,9 +59,19 @@ const actions = {
   async deleteWork({}, id) {
     try {
       await axios.delete(`work/${id}`);
-      // Дальнейшая обработка после удаления, если необходимо
     } catch (error) {
       console.error(`Failed to delete work with ID ${id}:`, error);
+      throw error;
+    }
+  },
+
+  async searchWorks({ commit }, query) {
+    try {
+      console.log(query);
+      let { data } = await axios.get("/works/search", { params: { query } });
+      commit("setWorks", data);
+    } catch (error) {
+      console.error(`Failed to get works with query ${query}:`, error);
       throw error;
     }
   },

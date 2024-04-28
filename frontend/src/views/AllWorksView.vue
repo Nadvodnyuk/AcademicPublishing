@@ -4,6 +4,11 @@
     <section>
       <h1>Статьи</h1>
       <hr /><br />
+      <div class="input-group">
+        <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
+          aria-describedby="search-addon" v-model="query"/>
+        <button type="button" class="btn btn-outline-primary" @click="search">search</button>
+      </div>
 
       <div v-if="works">
         <div v-for="work in works" :key="work.id" class="works">
@@ -35,17 +40,19 @@
 
 <script>
 import { defineComponent } from 'vue';
-import { mapGetters } from 'vuex'; //, mapActions 
+import { mapGetters, mapActions  } from 'vuex'; //
 
 export default defineComponent({
   name: 'AllWorks',
   data() {
     return {
+      query: '',
+      queryFlag: false,
     };
   },
 
   created: function () {
-    return this.$store.dispatch('getWorks');
+    return this.$store.dispatch('searchWorks', this.query);
   },
 
   computed: {
@@ -56,7 +63,23 @@ export default defineComponent({
   },
 
   methods: {
-    // ...mapActions([' ']),
+    ...mapActions(['searchWorks']),
+    async search() {
+      await this.$store.dispatch('searchWorks', this.query);
+    },
   },
+  watch: {
+    query(newValue) {
+      if (newValue.trim() == '') {
+        this.search();
+      }
+    }
+  }
 });
 </script>
+
+<style>
+.input-group{
+  margin-bottom: 40px;
+}
+</style>

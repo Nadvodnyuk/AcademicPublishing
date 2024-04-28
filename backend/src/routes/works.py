@@ -47,3 +47,14 @@ async def update_work(work_id: int, work: UpdateWork,) -> WorkOutSchema:
 )
 async def delete_work(work_id: int) -> Status:
     return await crud.delete_work(work_id)
+
+
+@router.get("/works/search", response_model=List[WorkOutSchema])
+async def search_works(query: str):
+    try:
+        if(query==''):
+            return await crud.get_works()
+        else:
+            return await crud.search_works(query)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
