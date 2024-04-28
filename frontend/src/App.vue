@@ -8,7 +8,7 @@
 </template>
 
 <script>
-// @ is an alias to /src
+// @ is /src
 import NavBar from '@/components/NavBar.vue'
 export default {
   components: {
@@ -25,6 +25,7 @@ export default {
   color: #2c3e50;
 }
 .main {
-  padding-top: 5em;
+  max-width: 70%;
+  padding-top: 2em;
 }
 </style>

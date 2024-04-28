@@ -6,10 +6,16 @@
       <hr /><br />
       <div class="input-group">
         <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
-          aria-describedby="search-addon" v-model="query"/>
+          aria-describedby="search-addon" v-model="query" />
         <button type="button" class="btn btn-outline-primary" @click="search">search</button>
       </div>
-
+      <div class="select">
+        <select class="form-select" aria-label="nameValue" v-model="yearValue" @change="sorting">
+          <option v-for="option in yearRange" :key="option.value" :value="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+      </div>
       <div v-if="works">
         <div v-for="work in works" :key="work.id" class="works">
           <div class="card" style="width: 18rem;">
@@ -40,7 +46,7 @@
 
 <script>
 import { defineComponent } from 'vue';
-import { mapGetters, mapActions  } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default defineComponent({
   name: 'AllWorks',
@@ -48,6 +54,12 @@ export default defineComponent({
     return {
       query: '',
       queryFlag: false,
+      yearValue: 0,
+      yearRange: [
+        { value: 0, label: 'Год по умолчанию', },
+        { value: 1, label: 'По возрастанию', },
+        { value: 2, label: 'По убыванию', }
+      ]
     };
   },
 
@@ -67,6 +79,22 @@ export default defineComponent({
     async search() {
       await this.$store.dispatch('searchWorks', this.query);
     },
+
+    async sorting() {
+      switch (this.yearValue) {
+        case 0:
+          await this.$store.dispatch('searchWorks', this.query);
+          break;
+
+        case 1:
+          this.works.sort((a, b) => { return a.year - b.year; });
+          break;
+
+        case 2:
+          this.works.sort((a, b) => { return b.year - a.year; });
+          break;
+      }
+    },
   },
   watch: {
     query(newValue) {
@@ -79,7 +107,15 @@ export default defineComponent({
 </script>
 
 <style>
-.input-group{
+.input-group {
+  margin-bottom: 40px;
+}
+
+.select {
+  display: flex;
+  justify-content: center;
+  width: 290px;
+  margin-top: 40px;
   margin-bottom: 40px;
 }
 </style>

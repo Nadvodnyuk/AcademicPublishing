@@ -6,8 +6,15 @@
       <hr /><br />
       <div class="input-group">
         <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
-          aria-describedby="search-addon" v-model="query"/>
-        <button type="button" class="btn btn-outline-primary" @click="search">search</button>
+          aria-describedby="search-addon" v-model="query" />
+        <button type="button" class="btn btn-outline-primary" @click="search()">search</button>
+      </div>
+      <div class="select">
+        <select class="form-select" aria-label="nameValue" v-model="nameValue" @change="sorting">
+          <option v-for="option in nameRange" :key="option.value" :value="option.value">
+            {{ option.label }}
+          </option>
+        </select>
       </div>
       <div v-if="authors">
         <div v-for="author in authors" :key="author.id" class="authors">
@@ -32,7 +39,7 @@
 
 <script>
 import { defineComponent } from 'vue';
-import { mapGetters, mapActions  } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default defineComponent({
   name: 'AllAuthors',
@@ -40,6 +47,12 @@ export default defineComponent({
     return {
       query: '',
       queryFlag: false,
+      nameValue: 0,
+      nameRange: [
+        { value: 0, label: 'Имя по умолчанию', },
+        { value: 1, label: 'А - Я', },
+        { value: 2, label: 'Я - А', }
+      ]
     };
   },
 
@@ -55,9 +68,24 @@ export default defineComponent({
   },
 
   methods: {
-   ...mapActions(['searchAuthors']),
-   async search() {
+    ...mapActions(['searchAuthors']),
+    async search() {
       await this.$store.dispatch('searchAuthors', this.query);
+    },
+
+    async sorting() {
+      switch (this.nameValue) {
+        case 0:
+          await this.$store.dispatch('searchAuthors', this.query);
+          break;
+        case 1:
+          this.authors.sort((a, b) => a.full_name.localeCompare(b.full_name));
+          break;
+
+        case 2:
+          this.authors.sort((a, b) => b.full_name.localeCompare(a.full_name));
+          break;
+      }
     },
   },
   watch: {
@@ -66,12 +94,20 @@ export default defineComponent({
         this.search();
       }
     }
-  }
+  },
 });
 </script>
 
 <style>
-.input-group{
+.input-group {
+  margin-bottom: 40px;
+}
+
+.select {
+  display: flex;
+  justify-content: center;
+  width: 290px;
+  margin-top: 40px;
   margin-bottom: 40px;
 }
 </style>
