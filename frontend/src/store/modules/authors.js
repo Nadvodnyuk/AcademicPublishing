@@ -55,6 +55,16 @@ const actions = {
       throw error;
     }
   },
+  async searchAuthors({ commit }, query) {
+    try {
+      console.log(query);
+      let { data } = await axios.get("/authors/search", { params: { query } });
+      commit("setAuthors", data);
+    } catch (error) {
+      console.error(`Failed to get authors with query ${query}:`, error);
+      throw error;
+    }
+  },
 };
 
 const mutations = {

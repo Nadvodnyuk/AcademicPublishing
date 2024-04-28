@@ -37,3 +37,13 @@ async def create_author(author: AuthorInSchema) -> AuthorOutSchema:
 )
 async def delete_author(author_id: int) -> Status:
     return await crud.delete_author(author_id)
+
+@router.get("/authors/search", response_model=List[AuthorOutSchema])
+async def search_authors(query: str):
+    try:
+        if(query==''):
+            return await crud.get_authors()
+        else:
+            return await crud.search_authors(query)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))

@@ -8,6 +8,7 @@ from src.schemas.works import WorkOutSchema
 import src.crud.authors_works as crudAW
 from tortoise.expressions import Q
 
+
 async def get_works():
     return await WorkOutSchema.from_queryset(Works.all())
 
@@ -20,7 +21,8 @@ async def create_work(work) -> WorkOutSchema:
     try:
         work_obj = await Works.create(**work.dict(exclude_unset=True))
     except IntegrityError:
-        raise HTTPException(status_code=401, detail=f"Sorry, that work name already exists.")
+        raise HTTPException(
+            status_code=401, detail=f"Sorry, that work name already exists.")
 
     return await WorkOutSchema.from_tortoise_orm(work_obj)
 
@@ -29,35 +31,41 @@ async def update_work(work_id, work) -> WorkOutSchema:
     try:
         await WorkOutSchema.from_queryset_single(Works.get(id=work_id))
     except DoesNotExist:
-        raise HTTPException(status_code=404, detail=f"Work {work_id} not found")
-    
+        raise HTTPException(
+            status_code=404, detail=f"Work {work_id} not found")
+
     await Works.filter(id=work_id).update(**work.dict(exclude_unset=True))
     return await WorkOutSchema.from_queryset_single(Works.get(id=work_id))
 
 
-
-async def delete_work(work_id)-> Status:
+async def delete_work(work_id) -> Status:
     author_works = await AuthorsWorks.filter(work_id=work_id).first()
 
     # Если запись существует, удаляем связанные записи в таблице AuthorsWorks
     if author_works:
         await crudAW.delete_authors_works_by_work_id(work_id)
-        
+
     try:
         await WorkOutSchema.from_queryset_single(Works.get(id=work_id))
     except DoesNotExist:
-        raise HTTPException(status_code=404, detail=f"Work {work_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Work {work_id} not found")
 
     deleted_count = await Works.filter(id=work_id).delete()
     if not deleted_count:
-        raise HTTPException(status_code=404, detail=f"Work {work_id} not found")
+        raise HTTPException(
+            status_code=404, detail=f"Work {work_id} not found")
     return Status(message=f"Deleted work {work_id}")
-
 
 
 async def search_works(query: str) -> List[WorkOutSchema]:
     try:
-        print(query)
+        year = None
+        try:
+            year = int(query)
+        except ValueError:
+            pass  # Если не удалось преобразовать в число, пропускаем
+
         results = await Works.filter(
             Q(field__icontains=query) |
             Q(title__icontains=query) |
@@ -70,7 +78,8 @@ async def search_works(query: str) -> List[WorkOutSchema]:
             Q(materials_methods__icontains=query) |
             Q(results__icontains=query) |
             Q(conclusion__icontains=query) |
-            Q(literature__icontains=query)
+            Q(literature__icontains=query) |
+            (Q(year=year) if year is not None else Q())  
         ).all()
         print(results)
         return [await WorkOutSchema.from_tortoise_orm(work) for work in results]

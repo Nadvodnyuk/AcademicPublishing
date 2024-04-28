@@ -1,3 +1,4 @@
+from typing import List
 from fastapi import HTTPException
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
@@ -5,6 +6,7 @@ from src.schemas.token import Status
 from src.database.models import Authors, AuthorsWorks
 from src.schemas.authors import AuthorOutSchema
 import src.crud.authors_works as crudAW
+from tortoise.expressions import Q
 
 
 async def get_authors():
@@ -41,7 +43,7 @@ async def delete_author(author_id) -> Status:
     # Если запись существует, удаляем связанные записи в таблице AuthorsWorks
     if author_works:
         await crudAW.delete_authors_works_by_author_id(author_id)
-        
+
     try:
         await AuthorOutSchema.from_queryset_single(Authors.get(id=author_id))
     except DoesNotExist:
@@ -53,3 +55,30 @@ async def delete_author(author_id) -> Status:
         raise HTTPException(
             status_code=404, detail=f"Author {author_id} not found")
     return Status(message=f"Deleted author {author_id}")
+
+
+async def search_authors(query: str) -> List[AuthorOutSchema]:
+    try:
+        index = None
+        try:
+            index = int(query)
+        except ValueError:
+            pass  # Если не удалось преобразовать в число, пропускаем
+        results = await Authors.filter(
+            Q(full_name__icontains=query) |
+            Q(short_name__icontains=query) |
+            Q(code__icontains=query) |
+            Q(a_status__icontains=query) |
+            Q(a_country__icontains=query) |
+            Q(a_city__icontains=query) |
+            (Q(a_index=index) if index is not None else Q()) |
+            Q(a_adress__icontains=query) |
+            Q(a_org__icontains=query) |
+            Q(a_sub_org__icontains=query) |
+            Q(phone__icontains=query) |
+            Q(email__icontains=query)
+        ).all()
+        print(results)
+        return [await AuthorOutSchema.from_tortoise_orm(author) for author in results]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
