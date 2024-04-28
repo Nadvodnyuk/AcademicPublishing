@@ -1,82 +1,79 @@
 <template>
   <div>
     <section>
+      <h3 v-if="showModal == true" class="mod">
+        Статья отправлена!
+      </h3>
       <h1>
         Создать статью
       </h1>
       <hr /><br />
-      <h3 v-if="showModal" class="modal">
-        Статья отправлена!
-      </h3>
       <form @submit.prevent="submit">
         <p>
           <strong>
             СВЕДЕНИЯ ОБ АВТОРАХ
           </strong>
         </p>
-        <div class="mb-3">
-          <label>АВТОРЫ</label>
-          <input type="button" class="btn btn-primary" value="+" @click="addAuthor">
-        </div>
         <div>
-          <div class="mb-3" v-for="(author, key, index) in authors" :key="key">
-            <label @dblclick="deleteAuthor(key)">
+          <div class="mb-3" v-for="(a, key, index) in authors" :key="key">
+            <div class="mb-3" @dblclick="deleteAuthor(key)">
               АВТОР {{ index + 1 }}
-            </label>
-            <input type="text" class="form-control" v-model="authors[key]">
+            </div>
+            <div>
+              <div class="mb-3">
+                <label for="full_name" class="form-label">Фамилия Имя Отчество</label>
+                <input type="text" name="full_name" v-model="authors[key].full_name" class="form-control"
+                  @click="showModal = false" />
+              </div>
+              <div class="mb-3">
+                <label for="short_name" class="form-label">Краткая форма имени</label>
+                <input type="text" name="short_name" v-model="authors[key].short_name" class="form-control" />
+              </div>
+              <div class="mb-3">
+                <label for="code" class="form-label">Код</label>
+                <input type="text" name="code" v-model="authors[key].code" class="form-control" />
+              </div>
+              <div class="mb-3">
+                <label for="a_status" class="form-label">Статус</label>
+                <input type="text" name="a_status" v-model="authors[key].a_status" class="form-control" />
+              </div>
+              <div class="mb-3">
+                <label for="a_country" class="form-label">Страна</label>
+                <input type="text" name="a_country" v-model="authors[key].a_country" class="form-control" />
+              </div>
+              <div class="mb-3">
+                <label for="a_city" class="form-label">Город</label>
+                <input type="text" name="a_city" v-model="authors[key].a_city" class="form-control" />
+              </div>
+              <div class="mb-3">
+                <label for="a_index" class="form-label">Индекс</label>
+                <input type="text" name="a_index" v-model="authors[key].a_index" class="form-control" />
+              </div>
+              <div class="mb-3">
+                <label for="a_adress" class="form-label">Адрес</label>
+                <input type="text" name="a_adress" v-model="authors[key].a_adress" class="form-control" />
+              </div>
+              <div class="mb-3">
+                <label for="a_org" class="form-label">Организация</label>
+                <input type="text" name="a_org" v-model="authors[key].a_org" class="form-control" />
+              </div>
+              <div class="mb-3">
+                <label for="a_sub_org" class="form-label">Подразделение</label>
+                <input type="text" name="a_sub_org" v-model="authors[key].a_sub_org" class="form-control" />
+              </div>
+              <div class="mb-3">
+                <label for="phone" class="form-label">Телефон</label>
+                <input type="text" name="phone" v-model="authors[key].phone" class="form-control" />
+              </div>
+              <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" name="email" v-model="authors[key].email" class="form-control" />
+              </div>
+            </div>
           </div>
         </div>
-
-        <div>
-          <div class="mb-3">
-            <label for="full_name" class="form-label">Полное имя</label>
-            <input type="text" name="full_name" v-model="author.full_name" class="form-control"
-              @click="showModal = false" />
-          </div>
-          <div class="mb-3">
-            <label for="short_name" class="form-label">Краткая форма имени</label>
-            <input type="text" name="short_name" v-model="author.short_name" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label for="code" class="form-label">Код</label>
-            <input type="text" name="code" v-model="author.code" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label for="a_status" class="form-label">Статус</label>
-            <input type="text" name="a_status" v-model="author.a_status" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label for="a_country" class="form-label">Страна</label>
-            <input type="text" name="a_country" v-model="author.a_country" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label for="a_city" class="form-label">Город</label>
-            <input type="text" name="a_city" v-model="author.a_city" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label for="a_index" class="form-label">Индекс</label>
-            <input type="text" name="a_index" v-model="author.a_index" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label for="a_adress" class="form-label">Адрес</label>
-            <input type="text" name="a_adress" v-model="author.a_adress" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label for="a_org" class="form-label">Организация</label>
-            <input type="text" name="a_org" v-model="author.a_org" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label for="a_sub_org" class="form-label">Подразделение</label>
-            <input type="text" name="a_sub_org" v-model="author.a_sub_org" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label for="phone" class="form-label">Телефон</label>
-            <input type="text" name="phone" v-model="author.phone" class="form-control" />
-          </div>
-          <div class="mb-3">
-            <label for="email" class="form-label">Email</label>
-            <input type="email" name="email" v-model="author.email" class="form-control" />
-          </div>
+        <div class="mb-3">
+          <input type="button" class="btn btn-primary" value="Добавить автора" @click="addAuthor()">
         </div>
 
         <p class="data">
@@ -206,27 +203,28 @@ export default defineComponent({
         literature: '',
       },
 
-      author: {
-        full_name: '',
-        short_name: '',
-        code: '',
-        a_status: '',
-        a_country: '',
-        a_city: '',
-        a_index: '',
-        a_adress: '',
-        a_org: '',
-        a_sub_org: '',
-        phone: '',
-        email: '',
-      },
-
       form: {
         author_id_id: 0,
         work_id_id: 0
       },
-      authors: {},
-      authorIterator: 0,
+
+      authors: {
+        1: {
+          full_name: '',
+          short_name: '',
+          code: '',
+          a_status: '',
+          a_country: '',
+          a_city: '',
+          a_index: '',
+          a_adress: '',
+          a_org: '',
+          a_sub_org: '',
+          phone: '',
+          email: ''
+        }
+      },
+      authorIterator: 1,
       showModal: false,
     };
   },
@@ -243,38 +241,104 @@ export default defineComponent({
   methods: {
     ...mapActions(['createWork', 'createAuthor', 'createAuthorsWorks']),
     async submit() {
-      this.author.full_name = this.author.full_name.trim();
-      this.author.code = this.author.code.trim();
-      await this.createAuthor(this.author);
       await this.createWork(this.work);
 
-      let authorsWorksData = {
-        author_id_id: this.$store.getters.stateCreatedAuthorId,
-        work_id_id: this.$store.getters.stateCreatedWorkId
-      };
-      await this.createAuthorsWorks(authorsWorksData);
+      for (const author of Object.values(this.authors)) {
+        author.full_name = author.full_name.trim();
+        author.code = author.code.trim();
+        await this.createAuthor(author);
+        let authorsWorksData = {
+          author_id_id: this.$store.getters.stateCreatedAuthorId,
+          work_id_id: this.$store.getters.stateCreatedWorkId
+        };
+        await this.createAuthorsWorks(authorsWorksData);
+      }
+
       this.showModal = true;
-      this.scrollToTop()
+      setTimeout(() => {
+        this.showModal = false;
+      }, 20000);
+      this.scrollToTop();
+      this.scrap();
     },
     addAuthor() {
       this.authorIterator++;
-      this.authors[this.authorIterator] = '';
+      this.authors[this.authorIterator] = {
+        full_name: '',
+        short_name: '',
+        code: '',
+        a_status: '',
+        a_country: '',
+        a_city: '',
+        a_index: '',
+        a_adress: '',
+        a_org: '',
+        a_sub_org: '',
+        phone: '',
+        email: ''
+      };
     },
     deleteAuthor(id) {
+      if (Object.keys(this.authors).length <= 1) {
+        return;
+      }
       delete this.authors[id];
     },
     scrollToTop() {
       window.scrollTo(0, 0);
     },
+    scrap() {
+      this.work = {
+        field: '',
+        title: '',
+        event: '',
+        status: '',
+        year: '',
+        org: '',
+        sub_org: '',
+        country: '',
+        city: '',
+        index: '',
+        mentor: '',
+        consultant: '',
+        abstract: '',
+        key_words: '',
+        intro: '',
+        aim: '',
+        materials_methods: '',
+        results: '',
+        conclusion: '',
+        literature: '',
+      };
+
+      this.authors = {
+        1: {
+          full_name: '',
+          short_name: '',
+          code: '',
+          a_status: '',
+          a_country: '',
+          a_city: '',
+          a_index: '',
+          a_adress: '',
+          a_org: '',
+          a_sub_org: '',
+          phone: '',
+          email: ''
+        }
+      };
+      this.authorIterator = 1;
+    }
   },
 });
 </script>
+
 <style>
 .data {
   margin-top: 50px;
 }
 
-.modal {
+.mod {
   color: green;
   margin-bottom: 25px;
 }
