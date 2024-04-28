@@ -7,10 +7,10 @@
       <div class="input-group">
         <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
           aria-describedby="search-addon" v-model="query" />
-        <button type="button" class="btn btn-outline-primary" @click="search">search</button>
+        <button type="button" class="btn btn-outline-primary" @click="search()">search</button>
       </div>
       <div class="select">
-        <select class="form-select" aria-label="nameValue" v-model="yearValue" @change="sorting">
+        <select class="form-select" v-model="yearValue" @change="sorting()">
           <option v-for="option in yearRange" :key="option.value" :value="option.value">
             {{ option.label }}
           </option>
@@ -52,7 +52,7 @@ export default defineComponent({
   name: 'AllWorks',
   data() {
     return {
-      query: '',
+      query: localStorage.getItem('query') || '',
       queryFlag: false,
       yearValue: 0,
       yearRange: [
@@ -64,6 +64,7 @@ export default defineComponent({
   },
 
   created: function () {
+    localStorage.setItem('query', this.query);
     return this.$store.dispatch('searchWorks', this.query);
   },
 
@@ -77,6 +78,7 @@ export default defineComponent({
   methods: {
     ...mapActions(['searchWorks']),
     async search() {
+      localStorage.setItem('query', this.query);
       await this.$store.dispatch('searchWorks', this.query);
     },
 

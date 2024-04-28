@@ -10,7 +10,7 @@
         <button type="button" class="btn btn-outline-primary" @click="search()">search</button>
       </div>
       <div class="select">
-        <select class="form-select" aria-label="nameValue" v-model="nameValue" @change="sorting">
+        <select class="form-select" v-model="nameValue" @change="sorting()">
           <option v-for="option in nameRange" :key="option.value" :value="option.value">
             {{ option.label }}
           </option>
