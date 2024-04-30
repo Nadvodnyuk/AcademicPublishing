@@ -65,10 +65,12 @@ const actions = {
     }
   },
 
-  async searchWorks({ commit }, query) {
+  async searchWorks({ commit }, {query, start_year, end_year, field_value}) {
     try {
-      console.log(query);
-      let { data } = await axios.get("/works/search", { params: { query } });
+      console.log(query, start_year, end_year, field_value);
+      let { data } = await axios.get("/works/search", {
+        params: { query, start_year, end_year, field_value }
+      });
       commit("setWorks", data);
     } catch (error) {
       console.error(`Failed to get works with query ${query}:`, error);

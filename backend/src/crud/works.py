@@ -58,7 +58,12 @@ async def delete_work(work_id) -> Status:
     return Status(message=f"Deleted work {work_id}")
 
 
-async def search_works(query: str) -> List[WorkOutSchema]:
+async def search_filter_works(
+    query: str,
+    start_year: int = None,
+    end_year: int = None,
+    field_value: str = None
+) -> List[WorkOutSchema]:
     try:
         year = None
         try:
@@ -66,7 +71,7 @@ async def search_works(query: str) -> List[WorkOutSchema]:
         except ValueError:
             pass  # Если не удалось преобразовать в число, пропускаем
 
-        results = await Works.filter(
+        filter_params = (
             Q(field__icontains=query) |
             Q(title__icontains=query) |
             Q(event__icontains=query) |
@@ -79,9 +84,19 @@ async def search_works(query: str) -> List[WorkOutSchema]:
             Q(results__icontains=query) |
             Q(conclusion__icontains=query) |
             Q(literature__icontains=query) |
-            (Q(year=year) if year is not None else Q())  
-        ).all()
-        print(results)
+            (Q(year=year) if year is not None else Q())
+        )
+
+        if start_year is not None:
+            filter_params &= Q(year__gte=start_year)
+
+        if end_year is not None:
+            filter_params &= Q(year__lte=end_year)
+
+        if field_value:
+            filter_params &= Q(field=field_value)
+
+        results = await Works.filter(filter_params).all()
         return [await WorkOutSchema.from_tortoise_orm(work) for work in results]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

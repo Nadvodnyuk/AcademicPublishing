@@ -3,7 +3,7 @@
     <form @submit.prevent="submit">
       <div class="mb-3">
         <label for="username" class="form-label">Логин:</label>
-        <input type="text" name="username" v-model="user.username" class="form-control" />
+        <input type="text" name="username" v-model="user.username" class="form-control" autocomplete="username"/>
       </div>
       <div class="mb-3">
         <label for="full_name" class="form-label">Полное имя:</label>
@@ -11,7 +11,7 @@
       </div>
       <div class="mb-3">
         <label for="password" class="form-label">Пароль:</label>
-        <input type="password" name="password" v-model="user.password" class="form-control" />
+        <input type="password" name="password" v-model="user.password" class="form-control" autocomplete="current-password"/>
       </div>
       <button type="submit" class="btn btn-primary">Зарегистрироваться</button>
     </form>
