@@ -1,9 +1,14 @@
+import os
 from typing import List
 from fastapi import HTTPException
+from matplotlib.ticker import MaxNLocator
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
 from src.schemas.token import Status
-from src.database.models import Authors, AuthorsWorks
+from src.database.models import Authors, AuthorsWorks, Works
 from src.schemas.authors import AuthorOutSchema
 import src.crud.authors_works as crudAW
 from tortoise.expressions import Q
@@ -82,3 +87,64 @@ async def search_authors(query: str) -> List[AuthorOutSchema]:
         return [await AuthorOutSchema.from_tortoise_orm(author) for author in results]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+async def generate_author_works_plots(author_id):
+    author_works = await AuthorsWorks.filter(author_id=author_id).all()
+    author = await Authors.get(id=author_id)
+    code = author.code
+
+    # Собираем информацию о работах автора в массивы для year, field и status
+    years = []
+    fields = []
+    statuses = []
+    print('все что есть', author_works)
+    for aw in author_works:
+        print('тольок одна', aw.work_id_id)
+        work = await Works.get(id=aw.work_id_id)
+        years.append(work.year)
+        fields.append(work.field)
+        statuses.append(work.status)
+
+    # Создаем DataFrame
+    data = pd.DataFrame({'year': years, 'field': fields, 'status': statuses})
+
+    new_folder_path = 'C:\\Users\\Yana\\Desktop\\ПРОЕКТ\\AcademicPublishing\\frontend\\public'
+    os.makedirs(new_folder_path, exist_ok=True)
+    folder_path = os.path.join(new_folder_path, code)
+    os.makedirs(folder_path, exist_ok=True)
+
+    image_paths = []
+
+    # Создаем графики для каждого года
+    for year, group in data.groupby('year'):
+        fig, ax = plt.subplots(figsize=(15, 6))
+        group = group.groupby(['field', 'status']).size().unstack(fill_value=0)
+        colors = plt.cm.get_cmap('Pastel1')(
+            np.linspace(0, 1, len(group.columns)))
+        bottom = None
+        for i, (status, color) in enumerate(zip(group.columns, colors)):
+            if bottom is None:
+                ax.barh(group.index, group[status], label=status, color=color, alpha=0.7, height = 0.3)
+                bottom = group[status]
+            else:
+                ax.barh(group.index, group[status], left=bottom, label=status, color=color, alpha=0.7, height = 0.3)
+                bottom += group[status]
+        ax.set_ylabel('Разделы')
+        ax.set_xlabel('Количество статей')
+        ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+        ax.set_title(f'Статьи за {year} от {author.short_name}')
+        ax.legend(loc='upper right', bbox_to_anchor=(1.25, 1), frameon=False)
+        ax.spines['left'].set_visible(False)
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.tick_params(axis='y', length=0)
+        plt.tight_layout()
+        filename = os.path.join(folder_path, f'{code}_{year}.png')
+        filenameNew = os.path.join('', f'{code}_{year}.png')
+        plt.savefig(filenameNew)
+        
+        image_paths.append(filenameNew)
+        plt.close()
+
+    return image_paths

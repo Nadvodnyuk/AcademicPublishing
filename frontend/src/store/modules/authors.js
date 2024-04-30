@@ -4,12 +4,14 @@ const state = {
   authors: null,
   author: null,
   createdAuthorId: null,
+  graphs: [],
 };
 
 const getters = {
   stateAuthors: (state) => state.authors,
   stateAuthor: (state) => state.author,
   stateCreatedAuthorId: (state) => state.createdAuthorId,
+  stateGraphs: (state) => state.graphs,
 };
 
 const actions = {
@@ -58,10 +60,19 @@ const actions = {
   async searchAuthors({ commit }, query) {
     try {
       console.log(query);
-      let { data } = await axios.get("/authors/search", { params: { query } });
+      let { data } = await axios.get("authors/search", { params: { query } });
       commit("setAuthors", data);
     } catch (error) {
       console.error(`Failed to get authors with query ${query}:`, error);
+      throw error;
+    }
+  },
+  async viewGraphs({ commit }, id) {
+    try {
+      let { data } = await axios.get(`authors/graphs/${id}`);
+      commit("setGraphs", data);
+    } catch (error) {
+      console.error("Failed to view graphs:", error);
       throw error;
     }
   },
@@ -76,6 +87,9 @@ const mutations = {
   },
   setCreatedAuthorId(state, createdAuthorId) {
     state.createdAuthorId = createdAuthorId;
+  },
+  setGraphs(state, graphs) {
+    state.graphs = graphs;
   },
 };
 

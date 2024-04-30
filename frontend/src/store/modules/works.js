@@ -68,7 +68,7 @@ const actions = {
   async searchWorks({ commit }, {query, start_year, end_year, field_value}) {
     try {
       console.log(query, start_year, end_year, field_value);
-      let { data } = await axios.get("/works/search", {
+      let { data } = await axios.get("works/search", {
         params: { query, start_year, end_year, field_value }
       });
       commit("setWorks", data);

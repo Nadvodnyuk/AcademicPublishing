@@ -63,7 +63,7 @@ const routes = [
     path: '/author/:id',
     name: 'AuthorC',
     component: AuthorView,
-    meta: { requiresAuth: true },
+    // meta: { requiresAuth: true },
     props: true,
   },
   {

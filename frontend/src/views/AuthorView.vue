@@ -52,6 +52,12 @@
         </router-link>
       </li>
     </ul>
+    <!-- <div v-if="graphs">
+      <div v-for="(graph, key) in graphs" :key="key" class="graphs">
+        <img :src="graph" alt="График статей">
+      </div>
+    </div> -->
+    <!-- <img :src="'/0000-0000-0000-0000/0000-0000-0000-0000_2024.png'" alt="График статей"> -->
     <p>
       <button @click="removeAuthor()" class="btn btn-secondary">
         Удалить автора
@@ -63,6 +69,7 @@
 <script>
 import { defineComponent } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
+import axios from "axios";
 
 export default defineComponent({
   name: 'AuthorC',
@@ -70,19 +77,23 @@ export default defineComponent({
   async created() {
     try {
       await this.viewAuthor(this.id);
+      // await this.viewGraphs(this.id);
+      let { data } = await axios.get(`authors/graphs/${this.id}`);
+      console.log(data);
     } catch (error) {
       console.error(error);
-      this.$router.push('/all');
+      // this.$router.push('/all');
     }
   },
   computed: {
-    ...mapGetters({ author: 'stateAuthor' }),
+    ...mapGetters({ author: 'stateAuthor', graphs: 'stateGraphs' }),
   },
   methods: {
     ...mapActions([
       'viewAuthor',
       'deleteAuthor',
-      'deleteAuthorsWorksByAuthorId'
+      'deleteAuthorsWorksByAuthorId',
+      'viewGraphs'
     ]),
 
     async removeAuthor() {
@@ -100,7 +111,8 @@ export default defineComponent({
 .label-cell {
   width: 150px;
 }
-.table{
+
+.table {
   margin-bottom: 50px;
 }
 </style>
