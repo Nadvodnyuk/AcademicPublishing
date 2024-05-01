@@ -53,12 +53,12 @@
       </li>
     </ul>
     <p>
-      Посмотреть данные об авторе:
+      Посмотреть данные об авторе за:
     </p>
     <div v-if="graphs">
       <select v-model="selectedYear" class="form-select">
         <option v-for="year in years" :key="year.key" :value="year.key">
-          {{ year.year }}
+          {{ year.year }} год
         </option>
       </select>
       <br />
@@ -144,7 +144,7 @@ export default defineComponent({
 .graphsImg {
   display: flex;
   justify-content: center;
-  width: 700px;
+  width: 830px;
   height: auto;
 }
 </style>

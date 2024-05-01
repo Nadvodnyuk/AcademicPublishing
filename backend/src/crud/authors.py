@@ -125,11 +125,13 @@ async def generate_author_works_plots(author_id):
             else:
                 ax.barh(group.index, group[status], left=bottom, label=status, color=color, alpha=0.7, height = 0.3)
                 bottom += group[status]
-        ax.set_ylabel('Разделы')
+        # ax.set_ylabel('Разделы')
+        ax.text(-0.4, -0.07, 'Разделы', fontsize=10, rotation=0, ha='center', va='center', transform=ax.transAxes)
         ax.set_xlabel('Количество статей')
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
-        ax.set_title(f'Статьи за {year} от {author.short_name}')
+        # ax.set_title(f'Статьи за {year} от {author.short_name}')
         ax.legend(loc='upper right', bbox_to_anchor=(1.25, 1), frameon=False)
+        ax.tick_params(axis='y', length=0, labelsize=12)
         ax.spines['left'].set_visible(False)
         ax.spines['top'].set_visible(False)
         ax.spines['right'].set_visible(False)
