@@ -5,6 +5,7 @@ const state = {
   author: null,
   createdAuthorId: null,
   graphs: [],
+  uniqueYears:[],
 };
 
 const getters = {
@@ -12,6 +13,7 @@ const getters = {
   stateAuthor: (state) => state.author,
   stateCreatedAuthorId: (state) => state.createdAuthorId,
   stateGraphs: (state) => state.graphs,
+  stateUniqueYears: (state) => state.uniqueYears,
 };
 
 const actions = {
@@ -70,7 +72,11 @@ const actions = {
   async viewGraphs({ commit }, id) {
     try {
       let { data } = await axios.get(`authors/graphs/${id}`);
-      commit("setGraphs", data);
+      const imagePaths = data.map(path => axios.defaults.baseURL + 'static/' + path.replace(/\\/g, '/'));
+      const uniqueYears = [...new Set(data.map(path => path.split('_')[1].split('.')[0]))];
+      commit("setGraphs", imagePaths);
+      commit("setUniqueYears", uniqueYears);
+      console.log(uniqueYears)
     } catch (error) {
       console.error("Failed to view graphs:", error);
       throw error;
@@ -90,6 +96,9 @@ const mutations = {
   },
   setGraphs(state, graphs) {
     state.graphs = graphs;
+  },
+  setUniqueYears(state, uniqueYears) {
+    state.uniqueYears = uniqueYears;
   },
 };
 

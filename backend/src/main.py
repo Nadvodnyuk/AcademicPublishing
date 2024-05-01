@@ -1,12 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from tortoise import Tortoise
 
 from src.database.register import register_tortoise
 from src.database.config import TORTOISE_ORM
 
 
-# enable schemas to read relationship between models
 Tortoise.init_models(["src.database.models"], "models")
 
 from src.routes import users, works, authors, authors_works
@@ -26,7 +26,7 @@ app.include_router(authors.router)
 app.include_router(authors_works.router)
 
 register_tortoise(app, config=TORTOISE_ORM, generate_schemas=False)
-
+app.mount("/static", StaticFiles(directory="C:\\Users\\Yana\\Desktop\\New"), name="static")
 
 @app.get("/")
 def home():

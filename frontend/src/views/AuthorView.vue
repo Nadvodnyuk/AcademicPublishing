@@ -52,12 +52,15 @@
         </router-link>
       </li>
     </ul>
-    <!-- <div v-if="graphs">
+    <p>
+      Посмотреть данные об авторе:
+    </p>
+    <div v-if="graphs">
       <div v-for="(graph, key) in graphs" :key="key" class="graphs">
-        <img :src="graph" alt="График статей">
+        <img :src="graph" alt="График статей" class="graphsImg">
       </div>
-    </div> -->
-    <!-- <img :src="'/0000-0000-0000-0000/0000-0000-0000-0000_2024.png'" alt="График статей"> -->
+    </div>
+    <hr /><br />
     <p>
       <button @click="removeAuthor()" class="btn btn-secondary">
         Удалить автора
@@ -69,7 +72,6 @@
 <script>
 import { defineComponent } from 'vue';
 import { mapGetters, mapActions } from 'vuex';
-import axios from "axios";
 
 export default defineComponent({
   name: 'AuthorC',
@@ -77,16 +79,14 @@ export default defineComponent({
   async created() {
     try {
       await this.viewAuthor(this.id);
-      // await this.viewGraphs(this.id);
-      let { data } = await axios.get(`authors/graphs/${this.id}`);
-      console.log(data);
+      await this.viewGraphs(this.id);
     } catch (error) {
       console.error(error);
-      // this.$router.push('/all');
+      this.$router.push('/all');
     }
   },
   computed: {
-    ...mapGetters({ author: 'stateAuthor', graphs: 'stateGraphs' }),
+    ...mapGetters({ author: 'stateAuthor', graphs: 'stateGraphs', years: 'stateUniqueYears' }),
   },
   methods: {
     ...mapActions([
@@ -107,6 +107,7 @@ export default defineComponent({
   },
 });
 </script>
+
 <style>
 .label-cell {
   width: 150px;
@@ -114,5 +115,17 @@ export default defineComponent({
 
 .table {
   margin-bottom: 50px;
+}
+
+.graphs {
+  display: flex;
+  justify-content: center;
+
+}
+.graphsImg {
+  display: flex;
+  justify-content: center;
+  width: 700px;
+  height: auto; 
 }
 </style>

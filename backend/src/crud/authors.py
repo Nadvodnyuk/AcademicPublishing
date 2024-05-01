@@ -109,7 +109,7 @@ async def generate_author_works_plots(author_id):
     # Создаем DataFrame
     data = pd.DataFrame({'year': years, 'field': fields, 'status': statuses})
 
-    new_folder_path = 'C:\\Users\\Yana\\Desktop\\ПРОЕКТ\\AcademicPublishing\\frontend\\public'
+    new_folder_path = 'C:\\Users\\Yana\\Desktop\\New'
     os.makedirs(new_folder_path, exist_ok=True)
     folder_path = os.path.join(new_folder_path, code)
     os.makedirs(folder_path, exist_ok=True)
@@ -141,8 +141,8 @@ async def generate_author_works_plots(author_id):
         ax.tick_params(axis='y', length=0)
         plt.tight_layout()
         filename = os.path.join(folder_path, f'{code}_{year}.png')
-        filenameNew = os.path.join('', f'{code}_{year}.png')
-        plt.savefig(filenameNew)
+        filenameNew = os.path.join(code, f'{code}_{year}.png')
+        plt.savefig(filename)
         
         image_paths.append(filenameNew)
         plt.close()
