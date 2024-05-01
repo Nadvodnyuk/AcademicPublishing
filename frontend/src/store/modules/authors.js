@@ -5,7 +5,7 @@ const state = {
   author: null,
   createdAuthorId: null,
   graphs: [],
-  uniqueYears:[],
+  uniqueYears:{},
 };
 
 const getters = {
@@ -73,8 +73,9 @@ const actions = {
     try {
       let { data } = await axios.get(`authors/graphs/${id}`);
       const imagePaths = data.map(path => axios.defaults.baseURL + 'static/' + path.replace(/\\/g, '/'));
-      const uniqueYears = [...new Set(data.map(path => path.split('_')[1].split('.')[0]))];
       commit("setGraphs", imagePaths);
+      const unique = [...new Set(data.map(path => path.split('_')[1].split('.')[0]))];
+      const uniqueYears = unique.map((year, index) => ({ key: index, year }))
       commit("setUniqueYears", uniqueYears);
       console.log(uniqueYears)
     } catch (error) {

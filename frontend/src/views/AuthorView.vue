@@ -56,9 +56,19 @@
       Посмотреть данные об авторе:
     </p>
     <div v-if="graphs">
-      <div v-for="(graph, key) in graphs" :key="key" class="graphs">
-        <img :src="graph" alt="График статей" class="graphsImg">
+      <select v-model="selectedYear" class="form-select">
+        <option v-for="year in years" :key="year.key" :value="year.key">
+          {{ year.year }}
+        </option>
+      </select>
+      <br />
+      <div class="graphs">
+        <img v-if="graphs" :src="graphs[selectedYear]" alt="График статей" class="graphsImg">
+        <p v-else>Выберите год для отображения графика статей</p>
       </div>
+      <!-- <div v-for="(graph, key) in graphs" :key="key" class="graphs">
+        <img :src="graph" alt="График статей" class="graphsImg">
+      </div> -->
     </div>
     <hr /><br />
     <p>
@@ -76,17 +86,28 @@ import { mapGetters, mapActions } from 'vuex';
 export default defineComponent({
   name: 'AuthorC',
   props: ['id'],
+  data() {
+    return {
+      selectedYear: null,
+      src:''
+    };
+  },
   async created() {
     try {
       await this.viewAuthor(this.id);
       await this.viewGraphs(this.id);
+      this.selectedYear = this.years[this.years.length - 1].key;
     } catch (error) {
       console.error(error);
       this.$router.push('/all');
     }
   },
   computed: {
-    ...mapGetters({ author: 'stateAuthor', graphs: 'stateGraphs', years: 'stateUniqueYears' }),
+    ...mapGetters({
+      author: 'stateAuthor',
+      graphs: 'stateGraphs',
+      years: 'stateUniqueYears'
+    }),
   },
   methods: {
     ...mapActions([
@@ -122,10 +143,11 @@ export default defineComponent({
   justify-content: center;
 
 }
+
 .graphsImg {
   display: flex;
   justify-content: center;
   width: 700px;
-  height: auto; 
+  height: auto;
 }
 </style>
