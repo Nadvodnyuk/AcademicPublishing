@@ -16,9 +16,9 @@ const actions = {
   async createWork({ commit, dispatch }, workData) {
     try {
       const response = await axios.post("works", workData);
-      const createdWork = response.data; // Получаем весь объект работы из ответа
-      const createdWorkId = createdWork.id; // Извлекаем ID из объекта работы
-      commit("setCreatedWorkId", createdWorkId); // Сохраняем ID в состояние хранилища
+      const createdWork = response.data;
+      const createdWorkId = createdWork.id;
+      commit("setCreatedWorkId", createdWorkId);
       await dispatch("getWorks");
       return createdWorkId;
     } catch (error) {

@@ -92,7 +92,6 @@ const actions = {
   async deleteAuthorsWorksByWorkId({}, workId) {
     try {
       await axios.delete(`authors_works/work/${workId}`);
-      // Дальнейшая обработка после удаления, если необходимо
     } catch (error) {
       console.error(
         `Failed to delete authors works by work ID ${workId}:`,
@@ -105,7 +104,6 @@ const actions = {
   async deleteAuthorsWorksById({}, authorsWorksId) {
     try {
       await axios.delete(`authors_works/id/${authorsWorksId}`);
-      // Дальнейшая обработка после удаления, если необходимо
     } catch (error) {
       console.error(
         `Failed to delete authors works by ID ${authorsWorksId}:`,

@@ -11,12 +11,10 @@ async def get_authors_works_all():
 
 
 async def get_authors_works_by_author_id(author_id):
-    # authors_works = await AuthorsWorks.filter(author_id=author_id).all()
     return await AWOutSchema.from_queryset(AuthorsWorks.filter(author_id=author_id).all())
 
 
 async def get_authors_works_by_work_id(work_id):
-    # work_authors = await AuthorsWorks.filter(work_id=work_id).all()
     return await AWOutSchema.from_queryset(AuthorsWorks.filter(work_id=work_id).all())
 
 

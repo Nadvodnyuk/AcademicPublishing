@@ -52,7 +52,6 @@ async def search_authors(query: str):
     
 @router.get("/authors/graphs/{author_id}", response_model=List[str])
 async def get_author_graphs(author_id: int):
-    # Вызываем функцию из crud для генерации графиков и получения путей к изображениям
     image_paths = await crud.generate_author_works_plots(author_id)
     if not image_paths:
         raise HTTPException(status_code=404, detail="Graphs not found")

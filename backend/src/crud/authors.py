@@ -29,7 +29,6 @@ async def get_ex_author(author) -> AuthorOutSchema:
 async def create_author(author) -> AuthorOutSchema:
     existing_author = await Authors.filter(full_name=author.full_name, code=author.code).first()
     if existing_author:
-        # Если автор уже существует, обновляем его данные
         await Authors.filter(full_name=author.full_name, code=author.code).update(**author.dict(exclude_unset=True))
         ex_author = await Authors.filter(full_name=author.full_name, code=author.code).first()
         return await AuthorOutSchema.from_tortoise_orm(ex_author)
@@ -45,7 +44,6 @@ async def create_author(author) -> AuthorOutSchema:
 async def delete_author(author_id) -> Status:
     author_works = await AuthorsWorks.filter(author_id=author_id).first()
 
-    # Если запись существует, удаляем связанные записи в таблице AuthorsWorks
     if author_works:
         await crudAW.delete_authors_works_by_author_id(author_id)
 
@@ -68,7 +66,7 @@ async def search_authors(query: str) -> List[AuthorOutSchema]:
         try:
             index = int(query)
         except ValueError:
-            pass  # Если не удалось преобразовать в число, пропускаем
+            pass
         results = await Authors.filter(
             Q(full_name__icontains=query) |
             Q(short_name__icontains=query) |
@@ -94,7 +92,6 @@ async def generate_author_works_plots(author_id):
     author = await Authors.get(id=author_id)
     code = author.code
 
-    # Собираем информацию о работах автора в массивы для year, field и status
     years = []
     fields = []
     statuses = []
@@ -106,7 +103,6 @@ async def generate_author_works_plots(author_id):
         fields.append(work.field)
         statuses.append(work.status)
 
-    # Создаем DataFrame
     data = pd.DataFrame({'year': years, 'field': fields, 'status': statuses})
 
     new_folder_path = 'C:\\Users\\Yana\\Desktop\\New'
@@ -116,7 +112,6 @@ async def generate_author_works_plots(author_id):
 
     image_paths = []
 
-    # Создаем графики для каждого года
     for year, group in data.groupby('year'):
         fig, ax = plt.subplots(figsize=(15, 6))
         group = group.groupby(['field', 'status']).size().unstack(fill_value=0)

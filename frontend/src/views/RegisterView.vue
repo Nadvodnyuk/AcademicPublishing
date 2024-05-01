@@ -40,7 +40,7 @@ export default defineComponent({
         await this.register(this.user);
         this.$router.push('/dashboard');
       } catch (error) {
-        throw 'Username already exists. Please try again.';
+        throw 'Такой пользователь уже существует. Измените имя пользователя.';
       }
     },
   },

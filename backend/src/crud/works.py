@@ -41,7 +41,6 @@ async def update_work(work_id, work) -> WorkOutSchema:
 async def delete_work(work_id) -> Status:
     author_works = await AuthorsWorks.filter(work_id=work_id).first()
 
-    # Если запись существует, удаляем связанные записи в таблице AuthorsWorks
     if author_works:
         await crudAW.delete_authors_works_by_work_id(work_id)
 
@@ -69,7 +68,7 @@ async def search_filter_works(
         try:
             year = int(query)
         except ValueError:
-            pass  # Если не удалось преобразовать в число, пропускаем
+            pass
 
         filter_params = (
             Q(field__icontains=query) |

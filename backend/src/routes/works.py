@@ -13,14 +13,10 @@ from src.schemas.works import WorkInSchema, WorkOutSchema, UpdateWork
 
 router = APIRouter()
 
-# работает
-
 
 @router.get("/works", response_model=List[WorkOutSchema])
 async def get_works():
     return await crud.get_works()
-
-# работает
 
 
 @router.get("/work/{work_id}", response_model=WorkOutSchema)
@@ -30,14 +26,10 @@ async def get_work(work_id: int) -> WorkOutSchema:
     except DoesNotExist:
         raise HTTPException(status_code=404, detail="Work does not exist",)
 
-# работает
-
 
 @router.post("/works", response_model=WorkOutSchema)
 async def create_work(work: WorkInSchema) -> WorkOutSchema:
     return await crud.create_work(work)
-
-# работает
 
 
 @router.patch(
@@ -47,8 +39,6 @@ async def create_work(work: WorkInSchema) -> WorkOutSchema:
 )
 async def update_work(work_id: int, work: UpdateWork,) -> WorkOutSchema:
     return await crud.update_work(work_id, work)
-
-# работает
 
 
 @router.delete(

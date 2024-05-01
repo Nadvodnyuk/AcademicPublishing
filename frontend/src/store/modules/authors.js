@@ -77,7 +77,6 @@ const actions = {
       const unique = [...new Set(data.map(path => path.split('_')[1].split('.')[0]))];
       const uniqueYears = unique.map((year, index) => ({ key: index, year }))
       commit("setUniqueYears", uniqueYears);
-      console.log(uniqueYears)
     } catch (error) {
       console.error("Failed to view graphs:", error);
       throw error;

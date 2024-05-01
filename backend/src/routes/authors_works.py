@@ -12,12 +12,12 @@ from src.schemas.authors_works import AWInSchema, AWOutSchema
 
 router = APIRouter()
 
-# работает
+
 @router.get("/authors_works", response_model=List[AWOutSchema])
 async def get_authors_works_all():
     return await crud.get_authors_works_all()
 
-# работает
+
 @router.get("/authors_works/author/{author_id}", response_model=List[AWOutSchema])
 async def get_authors_works_by_author_id(author_id: int) -> AWOutSchema:
     try:
@@ -25,7 +25,7 @@ async def get_authors_works_by_author_id(author_id: int) -> AWOutSchema:
     except DoesNotExist:
         raise HTTPException(status_code=404, detail="Instance does not exist",)
 
-# работает
+
 @router.get("/authors_works/work/{work_id}", response_model=List[AWOutSchema])
 async def get_authors_works_by_work_id(work_id: int) -> AWOutSchema:
     try:
@@ -33,7 +33,7 @@ async def get_authors_works_by_work_id(work_id: int) -> AWOutSchema:
     except DoesNotExist:
         raise HTTPException(status_code=404, detail="Instance does not exist",)
 
-# работает
+
 @router.get("/authors_works/id/{authors_works_id}", response_model=AWOutSchema)
 async def get_authors_works(authors_works_id: int) -> AWOutSchema:
     try:
@@ -41,16 +41,13 @@ async def get_authors_works(authors_works_id: int) -> AWOutSchema:
     except DoesNotExist:
         raise HTTPException(status_code=404, detail="Instance does not exist",)
 
-# работает
+
 @router.post("/authors_works", response_model=AWOutSchema)
 async def create_authors_works(authors_works: AWInSchema) -> AWOutSchema:
     return await crud.create_authors_works(authors_works)
 
 
-# Придумать функцию, которая получает список author_id, и один work_id
-# потом записывает поочереди
 
-# работает
 @router.delete(
     "/authors_works/author/{author_id}",
     response_model=Status,
@@ -59,7 +56,7 @@ async def create_authors_works(authors_works: AWInSchema) -> AWOutSchema:
 async def delete_authors_works_by_author_id(author_id: int) -> Status:
     return await crud.delete_authors_works_by_author_id(author_id)
 
-# работает
+
 @router.delete(
     "/authors_works/work/{work_id}",
     response_model=Status,
@@ -68,7 +65,7 @@ async def delete_authors_works_by_author_id(author_id: int) -> Status:
 async def delete_authors_works_by_work_id(work_id: int) -> Status:
     return await crud.delete_authors_works_by_work_id(work_id)
 
-# как-то нужно завтра потестить
+
 @router.delete(
     "/authors_works/id/{authors_works_id}",
     response_model=Status,
@@ -77,7 +74,7 @@ async def delete_authors_works_by_work_id(work_id: int) -> Status:
 async def delete_aw(authors_works_id: int) -> Status:
     return await crud.delete_aw(authors_works_id)
 
-# как-то нужно завтра потестить
+
 @router.delete(
     "/authors_works",
     response_model=Status,

@@ -64,11 +64,8 @@
       <br />
       <div class="graphs">
         <img v-if="graphs" :src="graphs[selectedYear]" alt="График статей" class="graphsImg">
-        <p v-else>Выберите год для отображения графика статей</p>
+        <p v-else> Работы {{ author.short_name }} не представлены на этом сайте.</p>
       </div>
-      <!-- <div v-for="(graph, key) in graphs" :key="key" class="graphs">
-        <img :src="graph" alt="График статей" class="graphsImg">
-      </div> -->
     </div>
     <hr /><br />
     <p>
