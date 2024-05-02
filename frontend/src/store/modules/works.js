@@ -4,12 +4,14 @@ const state = {
   works: null,
   work: null,
   createdWorkId: null,
+  pdf:null
 };
 
 const getters = {
   stateWorks: (state) => state.works,
   stateWork: (state) => state.work,
   stateCreatedWorkId: (state) => state.createdWorkId,
+  statePdf: (state) => state.pdf,
 };
 
 const actions = {
@@ -77,6 +79,17 @@ const actions = {
       throw error;
     }
   },
+  async getPDF({ commit }, id) {
+    try {
+      let { data } = await axios.get(`pdf/${id}`, { responseType: 'blob' });
+      let blob = new Blob([data], { type: 'application/pdf' });
+      let url = window.URL.createObjectURL(blob);
+      commit("setPdf", url);
+    } catch (error) {
+      console.error("Failed to get PFD:", error);
+      throw error;
+    }
+  },
 };
 
 const mutations = {
@@ -88,6 +101,9 @@ const mutations = {
   },
   setCreatedWorkId(state, createdWorkId) {
     state.createdWorkId = createdWorkId;
+  },
+  setPdf(state, pdf) {
+    state.pdf = pdf;
   },
 };
 

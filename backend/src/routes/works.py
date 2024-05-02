@@ -1,8 +1,10 @@
 import datetime
+import io
 from typing import List
 
 from fastapi import APIRouter, Depends, HTTPException, status
 
+from fastapi.responses import StreamingResponse
 from tortoise.contrib.fastapi import HTTPNotFoundError
 from tortoise.exceptions import DoesNotExist
 
@@ -61,5 +63,29 @@ async def search_filter_works(
             return await crud.get_works()
         else:
             return await crud.search_filter_works(query, start_year, end_year, field_value)
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@router.get(
+    "/pdf/{work_id}",
+    response_model=bytes,
+    responses={404: {"model": HTTPNotFoundError}})
+async def get_pdf(work_id: int):
+    try:
+        pdf_data = await crud.create_pdf(work_id)
+        print('pdf_data', pdf_data)
+        work = await crud.get_work(work_id)
+        print('work', work)
+        # Путь и имя файла для сохранения PDF
+        file_path = "C:\\Users\\Yana\\Desktop\\New\\work.pdf"
+
+        with open(file_path, "wb") as file:
+            file.write(pdf_data)
+            
+        return StreamingResponse(
+            io.BytesIO(pdf_data),
+            media_type="application/pdf",
+            headers={"Content-Disposition": f"attachment; filename=work_{work_id}.pdf"})
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
