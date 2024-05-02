@@ -1,5 +1,7 @@
 <template>
   <div v-if="work">
+    <h1>{{ work.title }}</h1>
+    <hr /><br />
     <ul>
       <li v-for="(author, index) in work.author" :key="index">
         <router-link :to="{ name: 'AuthorC', params: { id: author.author_id.id } }">

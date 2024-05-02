@@ -1,5 +1,7 @@
 <template>
   <div v-if="author">
+    <h1>{{ author.full_name }}</h1>
+    <hr /><br />
     <table class="table">
       <tr>
         <td class="label-cell"><strong>Полное имя</strong></td>
@@ -35,11 +37,11 @@
       </tr>
       <tr>
         <td class="label-cell"><strong>Телефон</strong></td>
-        <td>{{ author.phone }}</td>
+        <td><a :href="'tel:' + author.phone" class="link">{{ author.phone }}</a></td>
       </tr>
       <tr>
         <td class="label-cell"><strong>E-mail</strong></td>
-        <td><a :href="'mailto:' + author.email">{{ author.email }}</a></td>
+        <td><a :href="'mailto:' + author.email" class="link">{{ author.email }}</a></td>
       </tr>
     </table>
     <p>
@@ -86,7 +88,7 @@ export default defineComponent({
   data() {
     return {
       selectedYear: null,
-      src:''
+      src: ''
     };
   },
   async created() {
@@ -146,5 +148,9 @@ export default defineComponent({
   justify-content: center;
   width: 830px;
   height: auto;
+}
+
+.table> :not(caption)>*>* {
+  padding: 0;
 }
 </style>
