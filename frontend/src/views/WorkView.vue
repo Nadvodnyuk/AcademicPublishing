@@ -101,6 +101,12 @@ export default defineComponent({
     async downloadPDF() {
       try {
         await this.getPDF(this.id);
+        const link = document.createElement('a');
+        link.href = this.pdf;
+        link.setAttribute('download', `${this.work.title}.pdf`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
       } catch (error) {
         console.error('Ошибка при загрузке PDF:', error);
       }

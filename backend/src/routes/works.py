@@ -74,12 +74,8 @@ async def search_filter_works(
 async def get_pdf(work_id: int):
     try:
         pdf_data = await crud.create_pdf(work_id)
-        print('pdf_data', pdf_data)
-        work = await crud.get_work(work_id)
-        print('work', work)
         # Путь и имя файла для сохранения PDF
         file_path = "C:\\Users\\Yana\\Desktop\\New\\work.pdf"
-
         with open(file_path, "wb") as file:
             file.write(pdf_data)
             
