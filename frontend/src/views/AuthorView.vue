@@ -39,7 +39,7 @@
       </tr>
       <tr>
         <td class="label-cell"><strong>E-mail</strong></td>
-        <td>{{ author.email }}</td>
+        <td><a :href="'mailto:' + author.email">{{ author.email }}</a></td>
       </tr>
     </table>
     <p>

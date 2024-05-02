@@ -1,6 +1,14 @@
+from io import BytesIO
 from typing import List
 from fastapi import HTTPException
 from tortoise.exceptions import DoesNotExist, IntegrityError
+
+from reportlab.lib.pagesizes import A4
+from reportlab.lib.units import cm
+from reportlab.platypus import SimpleDocTemplate, Paragraph
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+# from reportlab.lib.enums import TA_JUSTIFY
+from reportlab.platypus import Spacer
 
 from src.schemas.token import Status
 from src.database.models import AuthorsWorks, Works
@@ -99,3 +107,48 @@ async def search_filter_works(
         return [await WorkOutSchema.from_tortoise_orm(work) for work in results]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+
+def create_pdf(work_id):
+    work_data = Works.get(id=work_id)
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=A4, leftMargin=2*cm,
+                            rightMargin=2*cm, topMargin=2*cm, bottomMargin=2*cm)
+
+    styles = getSampleStyleSheet()
+    style = styles["Normal"]
+    style.fontName = "Times-Roman"
+    style.fontSize = 14
+    style.leading = 14 * 1.5
+    # style.alignment = TA_JUSTIFY
+    style.firstLineIndent = 1.25 * cm
+    
+    title_style = ParagraphStyle(
+        name='TitleStyle',
+        fontSize=14,
+        fontWeight="Bold",
+        alignment=1
+    )
+
+    content = []
+    # допиши
+    field_names = []
+    
+    for key, value in work_data.items():
+        if key != "id":  # не id
+            field_name = field_names[key]
+            field_text = '<font name="Times-Roman">{0}</font>'.format(field_name)
+            value_text = '<font name="Times-Roman">{0}</font>'.format(value)
+            if key == 'title':
+                title_paragraph = Paragraph(value_text, title_style)
+                content.append(title_paragraph)
+            else:
+                content.append(Paragraph(field_text, style))
+                content.append(Paragraph(value_text, style))
+            content.append(Spacer(1, 12))  # Пустое пространство
+
+    doc.build(content)
+    pdf_data = buffer.getvalue()
+    buffer.close()
+
+    return pdf_data
