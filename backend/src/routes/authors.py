@@ -56,3 +56,11 @@ async def get_author_graphs(author_id: int):
     if not image_paths:
         raise HTTPException(status_code=404, detail="Graphs not found")
     return image_paths
+
+
+@router.get("/authors/pie/{author_id}", response_model=List[str])
+async def get_author_graphs(author_id: int):
+    image_path = await crud.generate_author_pie(author_id)
+    if not image_path:
+        raise HTTPException(status_code=404, detail="Graphs not found")
+    return image_path

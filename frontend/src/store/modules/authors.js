@@ -4,6 +4,7 @@ const state = {
   authors: null,
   author: null,
   createdAuthorId: null,
+  piePath:[],
   graphs: [],
   uniqueYears:{},
 };
@@ -14,6 +15,7 @@ const getters = {
   stateCreatedAuthorId: (state) => state.createdAuthorId,
   stateGraphs: (state) => state.graphs,
   stateUniqueYears: (state) => state.uniqueYears,
+  statePiePath: (state) => state.piePath,
 };
 
 const actions = {
@@ -50,6 +52,7 @@ const actions = {
       throw error;
     }
   },
+
   // eslint-disable-next-line no-empty-pattern
   async deleteAuthor({}, id) {
     try {
@@ -59,6 +62,7 @@ const actions = {
       throw error;
     }
   },
+
   async searchAuthors({ commit }, query) {
     try {
       console.log(query);
@@ -69,6 +73,7 @@ const actions = {
       throw error;
     }
   },
+
   async viewGraphs({ commit }, id) {
     try {
       let { data } = await axios.get(`authors/graphs/${id}`);
@@ -79,6 +84,17 @@ const actions = {
       commit("setUniqueYears", uniqueYears);
     } catch (error) {
       console.error("Failed to view graphs:", error);
+      throw error;
+    }
+  },
+
+  async viewPie({ commit }, id) {
+    try {
+      let { data } = await axios.get(`authors/pie/${id}`);
+      const piePath = data.map(path => axios.defaults.baseURL + 'static/' + path.replace(/\\/g, '/'));
+      commit("setPiePath", piePath);
+    } catch (error) {
+      console.error("Failed to view pie chart:", error);
       throw error;
     }
   },
@@ -99,6 +115,9 @@ const mutations = {
   },
   setUniqueYears(state, uniqueYears) {
     state.uniqueYears = uniqueYears;
+  },
+  setPiePath(state, piePath) {
+    state.piePath = piePath;
   },
 };
 

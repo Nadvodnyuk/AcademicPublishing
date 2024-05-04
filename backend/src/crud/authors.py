@@ -1,3 +1,4 @@
+from collections import Counter
 import os
 from typing import List
 from fastapi import HTTPException
@@ -145,3 +146,55 @@ async def generate_author_works_plots(author_id):
         plt.close()
 
     return image_paths
+
+async def generate_author_pie(author_id):
+    author_works = await AuthorsWorks.filter(author_id=author_id).all()
+    author = await Authors.get(id=author_id)
+    code = 'test'
+
+    field = []
+    for aw in author_works:
+        work = await Works.get(id=aw.work_id_id)
+        field.append(work.field)
+
+
+    new_folder_path = 'C:\\Users\\Yana\\Desktop\\New'
+    os.makedirs(new_folder_path, exist_ok=True)
+    folder_path = os.path.join(new_folder_path, code)
+    os.makedirs(folder_path, exist_ok=True)
+
+    files_and_folders = os.listdir(folder_path)
+
+    image_path = []
+
+    for item in files_and_folders:
+        item_path = os.path.join(folder_path, item)
+        if os.path.isfile(item_path):
+            os.remove(item_path)
+
+    os.makedirs(folder_path, exist_ok=True)
+
+    field_counts = Counter(field)
+
+    plt.figure(figsize=(10, 4))
+    ax = plt.gca()
+
+    labels = ['{} ({:.1f}%)'.format(field, (count/sum(field_counts.values()))*100)
+              for field, count in field_counts.items()]
+    colors = plt.get_cmap('tab10')(range(len(field_counts)))
+    wedges, texts, autotexts = ax.pie(field_counts.values(), labels=labels, startangle=90, wedgeprops=dict(width=0.4),
+                                      autopct='', textprops=dict(color="black"), colors=plt.cm.Pastel1.colors)
+
+    centre_circle = plt.Circle((0, 0), 0.5, fc='white')
+
+    ax.add_artist(centre_circle)
+    plt.title(f'УДК использованные автором {author.short_name}')
+
+    filename = os.path.join(folder_path, f'{code}.png')
+    filenameNew = os.path.join(code, f'{code}.png')
+    plt.savefig(filename)
+        
+    image_path.append(filenameNew)
+    plt.close()
+
+    return image_path

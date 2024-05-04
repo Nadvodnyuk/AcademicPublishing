@@ -54,6 +54,17 @@
         </router-link>
       </li>
     </ul>
+    <br /><hr /><br />
+    <p>
+      Интересы автора:
+    </p>
+    <div v-if="pie">
+      <div class="graphs">
+        <img v-if="pie" :src="pie[0]" alt="Круговой график УДК" class="graphsImg">
+        <p v-else> Работы {{ author.short_name }} не представлены на этом сайте.</p>
+      </div>
+      <hr /><br />
+    </div>
     <p>
       Посмотреть данные об авторе за:
     </p>
@@ -95,6 +106,8 @@ export default defineComponent({
     try {
       await this.viewAuthor(this.id);
       await this.viewGraphs(this.id);
+      await this.viewPie(this.id);
+      console.log(this.graphs, this.pie)
       this.selectedYear = this.years[this.years.length - 1].key;
     } catch (error) {
       console.error(error);
@@ -105,7 +118,8 @@ export default defineComponent({
     ...mapGetters({
       author: 'stateAuthor',
       graphs: 'stateGraphs',
-      years: 'stateUniqueYears'
+      years: 'stateUniqueYears',
+      pie: 'statePiePath'
     }),
   },
   methods: {
@@ -113,7 +127,8 @@ export default defineComponent({
       'viewAuthor',
       'deleteAuthor',
       'deleteAuthorsWorksByAuthorId',
-      'viewGraphs'
+      'viewGraphs',
+      'viewPie'
     ]),
 
     async removeAuthor() {
