@@ -1,10 +1,26 @@
 <template>
   <section>
-    <p>Веб-приложение для отправки статей.</p>
-
     <div v-if="isLoggedIn" id="logout">
-      <p>Вы можете</p>
+      <p>Информационная система по анализу публикационной активности.</p>
+      <p>Вы можете:</p>
       <p id="logout">
+      <ul>
+        <li>
+          <router-link class="nav-link" to="/all" style="color: #0d6efd;">
+            Просмотреть все статьи
+          </router-link>
+        </li>
+        <li>
+          <router-link class="nav-link" to="/allAuthors" style="color: #0d6efd;">
+            Просмотреть всех авторов
+          </router-link>
+        </li>
+      </ul>
+      </p>
+    </div>
+    <div v-else>
+      <p>Информационная система для отправки статей.</p>
+      <p>Вы можете:</p>
       <ul>
         <li>
           <router-link class="nav-link" to="/dashboard" style="color: #0d6efd;">
@@ -12,20 +28,10 @@
           </router-link>
         </li>
         <li>
-          <router-link class="nav-link" to="/all" style="color: #0d6efd;">
-            Просмотреть все статьи
-          </router-link>
+          <a href="/login">Войти</a>
         </li>
       </ul>
-
-
-      </p>
     </div>
-    <p v-else>
-      <span><a href="/register">Зарегистрироваться</a></span>
-      <span> или </span>
-      <span><a href="/login">Войти</a></span>
-    </p>
   </section>
 </template>
 <script>

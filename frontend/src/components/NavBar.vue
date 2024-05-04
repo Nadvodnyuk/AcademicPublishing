@@ -12,7 +12,7 @@
         <div class="collapse navbar-collapse" id="navbarCollapse" style="flex-grow: 0;">
           <ul v-if="isLoggedIn" class="navbar-nav me-auto mb-2 mb-md-0">
             <li class="nav-item">
-              <router-link class="nav-link" to="/dashboard">Создать статью
+              <router-link class="nav-link" to="/">Главная
               </router-link>
             </li>
             <li class="nav-item">
@@ -41,10 +41,10 @@
               <router-link class="nav-link" to="/dashboard">Создать статью
               </router-link>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
               <router-link class="nav-link" to="/register">Зарегистрироваться
               </router-link>
-            </li>
+            </li> -->
             <li class="nav-item">
               <router-link class="nav-link" to="/login">Войти
               </router-link>

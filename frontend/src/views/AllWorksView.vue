@@ -43,11 +43,6 @@
               {{ !filterFlag ? 'Применить' : 'Сбросить' }}
             </button>
           </div>
-          <!-- <div class="col">
-            <button type="button" class="btn btn-outline-primary" @click="undo()" style="width: 110px;">
-              Сбросить
-            </button>
-          </div> -->
         </div>
       </div>
       <hr />

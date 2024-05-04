@@ -2,11 +2,14 @@
   <div>
     <section>
       <h1>Авторы</h1>
-      <hr /><br />
+      <hr />
+      <br />
       <div class="input-group">
-        <input type="search" class="form-control rounded" placeholder="Search" aria-label="Search"
+        <input type="search" class="form-control rounded" placeholder="Введите запрос" aria-label="Search"
           aria-describedby="search-addon" v-model="query" />
-        <button type="button" class="btn btn-outline-primary" @click="search()">search</button>
+        <button type="button" class="btn btn-outline-primary" @click="search()">
+          search
+        </button>
       </div>
       <div class="select">
         <select class="form-select" v-model="nameValue" @change="sorting()">
@@ -17,9 +20,11 @@
       </div>
       <div v-if="authors">
         <div v-for="author in authors" :key="author.id" class="authors">
-          <div class="card" style="width: 18rem;">
+          <div class="card" style="width: 18rem">
             <div class="card-body">
-              <p><strong> {{ author.full_name }} </strong></p>
+              <p>
+                <strong> {{ author.full_name }} </strong>
+              </p>
               <router-link :to="{ name: 'AuthorC', params: { id: author.id } }">
                 Посмотреть автора
               </router-link>
@@ -37,45 +42,45 @@
 </template>
 
 <script>
-import { defineComponent } from 'vue';
-import { mapGetters, mapActions } from 'vuex';
+import { defineComponent } from "vue";
+import { mapGetters, mapActions } from "vuex";
 
 export default defineComponent({
-  name: 'AllAuthors',
+  name: "AllAuthors",
   data() {
     return {
-      query: '',
+      query: "",
       queryFlag: false,
       nameValue: 0,
       nameRange: [
-        { value: 0, label: 'Имя по умолчанию', },
-        { value: 1, label: 'А - Я', },
-        { value: 2, label: 'Я - А', }
-      ]
+        { value: 0, label: "Имя по умолчанию" },
+        { value: 1, label: "А - Я" },
+        { value: 2, label: "Я - А" },
+      ],
     };
   },
 
   created: function () {
-    return this.$store.dispatch('searchAuthors', this.query);
+    return this.$store.dispatch("searchAuthors", this.query);
   },
 
   computed: {
     ...mapGetters({
-      authors: 'stateAuthors',
-      authorsAuthorsByAuthor: 'stateAuthorsAuthorsByAuthor'
+      authors: "stateAuthors",
+      authorsAuthorsByAuthor: "stateAuthorsAuthorsByAuthor",
     }),
   },
 
   methods: {
-    ...mapActions(['searchAuthors']),
+    ...mapActions(["searchAuthors"]),
     async search() {
-      await this.$store.dispatch('searchAuthors', this.query);
+      await this.$store.dispatch("searchAuthors", this.query);
     },
 
     async sorting() {
       switch (this.nameValue) {
         case 0:
-          await this.$store.dispatch('searchAuthors', this.query);
+          await this.$store.dispatch("searchAuthors", this.query);
           break;
         case 1:
           this.authors.sort((a, b) => a.full_name.localeCompare(b.full_name));
@@ -89,10 +94,10 @@ export default defineComponent({
   },
   watch: {
     query(newValue) {
-      if (newValue.trim() == '') {
+      if (newValue.trim() == "") {
         this.search();
       }
-    }
+    },
   },
 });
 </script>

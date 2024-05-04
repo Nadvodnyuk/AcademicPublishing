@@ -7,7 +7,11 @@
       <div class="mb-3">
         <p>{{ work.title }}</p>
         <label for="status" class="form-label">Статус:</label>
-        <input type="text" name="status" v-model="form.status" class="form-control" />
+        <select class="form-select" v-model="form.status">
+          <option v-for="option in statuses" :key="option.value" :value="option.label">
+            {{ option.label }}
+          </option>
+        </select>
       </div>
       <button type="submit" class="btn btn-primary">Отправить</button>
     </form>
@@ -26,6 +30,17 @@ export default defineComponent({
       form: {
         status: '',
       },
+      statuses: [
+        { value: 0, label: 'Препринт', },
+        { value: 1, label: 'Тезис', },
+        { value: 2, label: 'Доклад', },
+        { value: 3, label: 'Журнал', },
+        { value: 4, label: 'Печать', },
+        { value: 5, label: 'Энциклопедия', },
+        { value: 6, label: 'Рецензирование', },
+        { value: 7, label: 'Редактирование', },
+        { value: 8, label: 'Плагиат', },
+      ],
     };
   },
   created: function () {
