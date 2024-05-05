@@ -8,6 +8,8 @@ from fastapi.responses import StreamingResponse
 from tortoise.contrib.fastapi import HTTPNotFoundError
 from tortoise.exceptions import DoesNotExist
 
+from src.auth.jwthandler import get_current_user
+from src.schemas.users import UserOutSchema
 from src.schemas.token import Status
 import src.crud.works as crud
 from src.schemas.works import WorkInSchema, WorkOutSchema, UpdateWork
@@ -17,12 +19,12 @@ router = APIRouter()
 
 
 @router.get("/works", response_model=List[WorkOutSchema])
-async def get_works():
+async def get_works(current_user: UserOutSchema = Depends(get_current_user)):
     return await crud.get_works()
 
 
 @router.get("/work/{work_id}", response_model=WorkOutSchema)
-async def get_work(work_id: int) -> WorkOutSchema:
+async def get_work(work_id: int, current_user: UserOutSchema = Depends(get_current_user)) -> WorkOutSchema:
     try:
         return await crud.get_work(work_id)
     except DoesNotExist:
@@ -39,7 +41,7 @@ async def create_work(work: WorkInSchema) -> WorkOutSchema:
     response_model=WorkOutSchema,
     responses={404: {"model": HTTPNotFoundError}},
 )
-async def update_work(work_id: int, work: UpdateWork,) -> WorkOutSchema:
+async def update_work(work_id: int, work: UpdateWork, current_user: UserOutSchema = Depends(get_current_user)) -> WorkOutSchema:
     return await crud.update_work(work_id, work)
 
 
@@ -48,7 +50,7 @@ async def update_work(work_id: int, work: UpdateWork,) -> WorkOutSchema:
     response_model=Status,
     responses={404: {"model": HTTPNotFoundError}}
 )
-async def delete_work(work_id: int) -> Status:
+async def delete_work(work_id: int, current_user: UserOutSchema = Depends(get_current_user)) -> Status:
     return await crud.delete_work(work_id)
 
 
@@ -57,7 +59,7 @@ async def search_filter_works(
         query: str,
         start_year: int,
         end_year: int,
-        field_value: str):
+        field_value: str, current_user: UserOutSchema = Depends(get_current_user)):
     try:
         if (query == '' and start_year == 0 and end_year == datetime.datetime.now().year and field_value == ''):
             return await crud.get_works()
@@ -71,7 +73,7 @@ async def search_filter_works(
     "/pdf/{work_id}",
     response_model=bytes,
     responses={404: {"model": HTTPNotFoundError}})
-async def get_pdf(work_id: int):
+async def get_pdf(work_id: int, current_user: UserOutSchema = Depends(get_current_user)):
     try:
         pdf_data = await crud.create_pdf(work_id)
         # Путь и имя файла для сохранения PDF

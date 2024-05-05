@@ -5,6 +5,8 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from tortoise.contrib.fastapi import HTTPNotFoundError
 from tortoise.exceptions import DoesNotExist
 
+from src.auth.jwthandler import get_current_user
+from src.schemas.users import UserOutSchema
 from src.schemas.token import Status
 import src.crud.authors_works as crud
 from src.schemas.authors_works import AWInSchema, AWOutSchema
@@ -14,12 +16,12 @@ router = APIRouter()
 
 
 @router.get("/authors_works", response_model=List[AWOutSchema])
-async def get_authors_works_all():
+async def get_authors_works_all(current_user: UserOutSchema = Depends(get_current_user)):
     return await crud.get_authors_works_all()
 
 
 @router.get("/authors_works/author/{author_id}", response_model=List[AWOutSchema])
-async def get_authors_works_by_author_id(author_id: int) -> AWOutSchema:
+async def get_authors_works_by_author_id(author_id: int, current_user: UserOutSchema = Depends(get_current_user)) -> AWOutSchema:
     try:
         return await crud.get_authors_works_by_author_id(author_id)
     except DoesNotExist:
@@ -27,7 +29,7 @@ async def get_authors_works_by_author_id(author_id: int) -> AWOutSchema:
 
 
 @router.get("/authors_works/work/{work_id}", response_model=List[AWOutSchema])
-async def get_authors_works_by_work_id(work_id: int) -> AWOutSchema:
+async def get_authors_works_by_work_id(work_id: int, current_user: UserOutSchema = Depends(get_current_user)) -> AWOutSchema:
     try:
         return await crud.get_authors_works_by_work_id(work_id)
     except DoesNotExist:
@@ -35,7 +37,7 @@ async def get_authors_works_by_work_id(work_id: int) -> AWOutSchema:
 
 
 @router.get("/authors_works/id/{authors_works_id}", response_model=AWOutSchema)
-async def get_authors_works(authors_works_id: int) -> AWOutSchema:
+async def get_authors_works(authors_works_id: int, current_user: UserOutSchema = Depends(get_current_user)) -> AWOutSchema:
     try:
         return await crud.get_authors_works(authors_works_id)
     except DoesNotExist:
@@ -47,13 +49,12 @@ async def create_authors_works(authors_works: AWInSchema) -> AWOutSchema:
     return await crud.create_authors_works(authors_works)
 
 
-
 @router.delete(
     "/authors_works/author/{author_id}",
     response_model=Status,
     responses={404: {"model": HTTPNotFoundError}}
 )
-async def delete_authors_works_by_author_id(author_id: int) -> Status:
+async def delete_authors_works_by_author_id(author_id: int, current_user: UserOutSchema = Depends(get_current_user)) -> Status:
     return await crud.delete_authors_works_by_author_id(author_id)
 
 
@@ -62,7 +63,7 @@ async def delete_authors_works_by_author_id(author_id: int) -> Status:
     response_model=Status,
     responses={404: {"model": HTTPNotFoundError}}
 )
-async def delete_authors_works_by_work_id(work_id: int) -> Status:
+async def delete_authors_works_by_work_id(work_id: int, current_user: UserOutSchema = Depends(get_current_user)) -> Status:
     return await crud.delete_authors_works_by_work_id(work_id)
 
 
@@ -71,7 +72,7 @@ async def delete_authors_works_by_work_id(work_id: int) -> Status:
     response_model=Status,
     responses={404: {"model": HTTPNotFoundError}}
 )
-async def delete_aw(authors_works_id: int) -> Status:
+async def delete_aw(authors_works_id: int, current_user: UserOutSchema = Depends(get_current_user)) -> Status:
     return await crud.delete_aw(authors_works_id)
 
 
@@ -80,5 +81,5 @@ async def delete_aw(authors_works_id: int) -> Status:
     response_model=Status,
     responses={404: {"model": HTTPNotFoundError}}
 )
-async def delete_authors_works(authors_works: AWInSchema) -> Status:
+async def delete_authors_works(authors_works: AWInSchema, current_user: UserOutSchema = Depends(get_current_user)) -> Status:
     return await crud.delete_authors_works(authors_works)
