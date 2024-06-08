@@ -3,6 +3,10 @@ from typing import List
 from fastapi import HTTPException
 from tortoise.exceptions import DoesNotExist, IntegrityError
 
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+import smtplib
+
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
 from reportlab.platypus import SimpleDocTemplate, Paragraph
@@ -46,6 +50,25 @@ async def update_work(work_id, work) -> WorkOutSchema:
             status_code=404, detail=f"Work {work_id} not found")
 
     await Works.filter(id=work_id).update(**work.dict(exclude_unset=True))
+
+    updated_work = await WorkOutSchema.from_queryset_single(Works.get(id=work_id))
+    from_email = "yaonadvodnyuk@stud.etu.ru"
+    password = "*"
+
+    msg = MIMEMultipart()
+    msg['From'] = from_email
+    msg['To'] = "yanadvodnyuk@gmail.com"
+    msg['Subject'] = f"Work Updated: {updated_work.title}"
+
+    msg.attach(MIMEText(
+        f"Работа {updated_work.title} обновлена. Изменения статуса: {updated_work.status}", 'plain'))
+
+    server = smtplib.SMTP('smtp.yandex.com', 587)
+    server.starttls()
+    server.login(from_email, password)
+    text = msg.as_string()
+    server.sendmail(from_email, "yanadvodnyuk@gmail.com", text)
+    server.quit()
     return await WorkOutSchema.from_queryset_single(Works.get(id=work_id))
 
 
@@ -119,11 +142,11 @@ async def create_pdf(work_id):
     buffer = BytesIO()
     doc = SimpleDocTemplate(buffer, pagesize=A4, leftMargin=2*cm,
                             rightMargin=2*cm, topMargin=2*cm, bottomMargin=2*cm)
-    
+
     pdfmetrics.registerFont(TTFont('TNR', 'times.ttf', 'UTF-8'))
-    
+
     style = getSampleStyleSheet()
-    style['Normal'].fontName='TNR'
+    style['Normal'].fontName = 'TNR'
     # style = styles["Normal"]
     # style.fontName = "Times-Roman"
     style['Normal'].fontSize = 14
@@ -132,7 +155,7 @@ async def create_pdf(work_id):
     style['Normal'].firstLineIndent = 1.25 * cm
 
     title_style = getSampleStyleSheet()
-    title_style['Normal'].fontName='TNR'
+    title_style['Normal'].fontName = 'TNR'
 
     title_style['Normal'].fontSize = 14
     title_style['Normal'].leading = 14 * 1.5
@@ -144,12 +167,12 @@ async def create_pdf(work_id):
     field_names = ['ID', 'УДК', 'Название', 'Подготовлено для:', 'Статус', 'Год', 'Организация',
                    'Подразделение', 'Страна', 'Город', 'Индекс', 'Данные о научных руководителях',
                    'Данные о научных консультантах', 'Аннотация', 'Ключевые слова', 'Введение',
-                   'Цель', 'Материалы и методы', 'Результаты и обсуждение', 'Заключение', 
+                   'Цель', 'Материалы и методы', 'Результаты и обсуждение', 'Заключение',
                    'Список источников', 'Автор']
-    
+
     print("Длина списка field_names:", len(field_names))
     print("Длина словаря work_data.__dict__:", len(work_data.__dict__))
-    
+
     for idx, (key, value) in enumerate(work_data.__dict__.items()):
         if key != "id":  # не id
             # print('key', key)
@@ -172,13 +195,13 @@ async def create_pdf(work_id):
                         if k != "id" and k != "created_at" and k != "modified_at":
                             if k == 'a_index':
                                 v = str(v)
-                            content.append(Paragraph(v, style["Normal"]))  
-                    content.append(Spacer(1, 12))           
+                            content.append(Paragraph(v, style["Normal"]))
+                    content.append(Spacer(1, 12))
             else:
                 content.append(Paragraph(field_text, style["Normal"]))
                 content.append(Paragraph(value_text, style["Normal"]))
             content.append(Spacer(1, 12))
-             
+
     doc.build(content)
     pdf_data = buffer.getvalue()
     buffer.close()
